@@ -1,0 +1,35 @@
+# ========================
+# CreatorPulse .gitignore
+# ========================
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+venv/
+.env
+
+# Node / React
+node_modules/
+.build/
+dist/
+build/
+.npm/
+.env.local
+.env.development
+.env.production
+
+# OS / IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Misc
+*.bak
+*.tmp
+*.swp

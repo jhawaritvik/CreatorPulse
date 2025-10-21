@@ -1,0 +1,20 @@
+# Core Python packages
+python-dotenv>=1.0.0          # Load .env files
+supabase>=2.0.0               # Supabase Python client
+aiohttp>=3.9.0                # Async HTTP requests
+feedparser>=6.0.10            # RSS & Podcast feeds parsing
+beautifulsoup4>=4.12.2        # HTML parsing
+# nltk>=3.8.1                   # NLP utilities, only if you need text processing
+newspaper3k>=0.2.8            # Optional blog article parsing fallback
+google-genai>=1.0.0           # New Google GenAI SDK (replaces google-generativeai)
+pyyaml>=6.0                   # YAML configuration files
+requests>=2.31.0              # HTTP requests library
+lxml>=4.9.0                   # XML/HTML parser for newspaper3k
+python-dateutil>=2.8.2        # Date/time parsing
+apscheduler>=3.10.4           # Background scheduler
+
+# FastAPI and web server dependencies
+fastapi>=0.104.0              # FastAPI framework
+uvicorn[standard]>=0.24.0     # ASGI server
+pydantic>=2.5.0               # Data validation
+python-multipart>=0.0.6      # Form data parsing

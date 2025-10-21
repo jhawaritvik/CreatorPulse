@@ -1,0 +1,21 @@
+# Configuration for the CreatorPulse backend
+
+# LLM settings for Gemini
+llm:
+  enabled: true
+  # The API key is now loaded from the .env file (GEMINI_API_KEY)
+  model: "gemini-2.5-flash"
+
+
+# Ranking weights for different sources
+ranking:
+  source_weights:
+    reddit: 10.0
+    rss: 5.0
+    youtube: 7.0
+    blog: 5.0
+    other: 1.0
+
+# Other options
+options:
+  max_items: 60 # Max items to send to the LLM for richer content

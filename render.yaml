@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: creatorpulse-backend
+    env: python
+    plan: free
+    rootDir: creatorpulse-backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHONPATH
+        value: .
+
+  - type: worker
+    name: creatorpulse-scheduler
+    env: python
+    plan: free
+    rootDir: creatorpulse-backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python scheduler.py
+    envVars:
+      - key: PYTHONPATH
+        value: .
