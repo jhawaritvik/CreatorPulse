@@ -37,10 +37,20 @@ export default function ApiTest() {
   const testGenerateDraft = async () => {
     setLoading(true);
     try {
-      // Test with minimal data
+      // Test with minimal valid data
+      // Use 'new' to indicate a draft for a new newsletter (backend skips UUID validation)
       const result = await apiService.generateDraft({
-        newsletterId: 'test',
-        sources: []
+        newsletterId: 'new',
+        // Provide at least one fake active source identifier structure to pass validation
+        sources: [
+          {
+            id: 'debug-source',
+            source_type: 'rss',
+            source_name: 'Debug Source',
+            source_identifier: 'https://example.com/rss.xml',
+            active: true
+          }
+        ]
       });
       setTestResult(`✅ Generate Draft Successful: ${JSON.stringify(result)}`);
     } catch (error) {

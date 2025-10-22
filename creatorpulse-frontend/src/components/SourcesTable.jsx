@@ -179,44 +179,17 @@ export default function SourcesTable() {
         { source_type: 'rss', source_name: 'AI News', source_identifier: 'https://www.artificialintelligence-news.com/feed/', active: true },
         { source_type: 'rss', source_name: 'Medium Generative AI', source_identifier: 'https://medium.com/feed/tag/generative-ai', active: true },
         { source_type: 'rss', source_name: 'MIT AI News', source_identifier: 'https://news.mit.edu/rss/topic/artificial-intelligence', active: true },
-        { source_type: 'rss', source_name: 'Berkeley AI Research', source_identifier: 'https://bair.berkeley.edu/blog/feed.xml', active: true },
-        { source_type: 'rss', source_name: 'Analytics Vidhya', source_identifier: 'https://www.analyticsvidhya.com/blog/feed/', active: true },
-        { source_type: 'rss', source_name: 'Google Cloud Vertex AI', source_identifier: 'https://cloud.google.com/feeds/vertex-ai-release-notes.xml', active: true },
-        { source_type: 'rss', source_name: 'MIT Technology Review', source_identifier: 'https://www.technologyreview.com/feed/', active: true },
-        { source_type: 'rss', source_name: 'OpenAI Blog', source_identifier: 'https://openai.com/blog/rss/', active: true },
-        { source_type: 'rss', source_name: 'Google AI Blog', source_identifier: 'https://ai.googleblog.com/feeds/posts/default', active: true },
-        { source_type: 'rss', source_name: 'AI Trends', source_identifier: 'https://www.aitrends.com/feed/', active: true },
-        { source_type: 'rss', source_name: 'Machine Learning Mastery', source_identifier: 'https://machinelearningmastery.com/blog/feed/', active: true },
-        { source_type: 'rss', source_name: 'NVIDIA AI Blog', source_identifier: 'https://blogs.nvidia.com/blog/category/ai/feed/', active: true },
-        { source_type: 'rss', source_name: 'ArXiv AI Papers', source_identifier: 'http://export.arxiv.org/rss/cs.AI', active: true },
-        { source_type: 'rss', source_name: 'ArXiv ML Papers', source_identifier: 'http://export.arxiv.org/rss/cs.LG', active: true },
-        { source_type: 'rss', source_name: 'DeepLearning.AI', source_identifier: 'https://www.deeplearning.ai/the-batch/feed/', active: true },
-        
+       
         // Reddit Sources
-        { source_type: 'reddit', source_name: 'Machine Learning', source_identifier: 'machinelearning', active: true },
         { source_type: 'reddit', source_name: 'Artificial Intelligence', source_identifier: 'artificial', active: true },
-        { source_type: 'reddit', source_name: 'Open Source AI', source_identifier: 'opensourceeai', active: true },
-        { source_type: 'reddit', source_name: 'ChatGPT', source_identifier: 'chatgpt', active: true },
         
         // Blog Sources (websites without RSS)
         { source_type: 'blog', source_name: 'Stability AI News', source_identifier: 'https://stability.ai/news', active: true },
-        { source_type: 'blog', source_name: 'Emergent Mind', source_identifier: 'https://www.emergentmind.com/', active: true },
-        { source_type: 'blog', source_name: 'CatalyzeX', source_identifier: 'https://www.catalyzex.com/', active: true },
       ];
     } else if (templateType === 'General') {
       return [
         // --- Tech & Business ---
         { source_type: 'rss', source_name: 'TechCrunch', source_identifier: 'https://techcrunch.com/feed/', active: true },
-        { source_type: 'rss', source_name: 'The Verge', source_identifier: 'https://www.theverge.com/rss/index.xml', active: true },
-        { source_type: 'rss', source_name: 'BBC Business', source_identifier: 'https://feeds.bbci.co.uk/news/business/rss.xml', active: true },
-        { source_type: 'rss', source_name: 'Harvard Business Review', source_identifier: 'https://hbr.org/feed', active: true },
-        
-        // --- Science & Education ---
-        { source_type: 'rss', source_name: 'NASA News', source_identifier: 'https://www.nasa.gov/rss/dyn/breaking_news.rss', active: true },
-        { source_type: 'rss', source_name: 'Scientific American', source_identifier: 'https://www.scientificamerican.com/feed/', active: true },
-        { source_type: 'rss', source_name: 'National Geographic', source_identifier: 'https://www.nationalgeographic.com/feeds/news', active: true },
-        { source_type: 'rss', source_name: 'MIT News', source_identifier: 'https://news.mit.edu/rss/feed', active: true },
-
         // --- World & Politics ---
         { source_type: 'rss', source_name: 'BBC World', source_identifier: 'https://feeds.bbci.co.uk/news/world/rss.xml', active: true },
         { source_type: 'rss', source_name: 'Reuters World News', source_identifier: 'https://feeds.reuters.com/reuters/worldNews', active: true },
@@ -224,14 +197,9 @@ export default function SourcesTable() {
 
         // --- Reddit Communities ---
         { source_type: 'reddit', source_name: 'World News', source_identifier: 'worldnews', active: true },
-        { source_type: 'reddit', source_name: 'Technology', source_identifier: 'technology', active: true },
-        { source_type: 'reddit', source_name: 'Business', source_identifier: 'business', active: true },
-        { source_type: 'reddit', source_name: 'Science', source_identifier: 'science', active: true },
 
         // --- Blogs & Podcasts ---
         { source_type: 'blog', source_name: 'Wait But Why', source_identifier: 'https://waitbutwhy.com/', active: true },
-        { source_type: 'blog', source_name: 'Seth Godin’s Blog', source_identifier: 'https://seths.blog/', active: true },
-        { source_type: 'podcast', source_name: 'The Daily (NYT)', source_identifier: 'https://feeds.simplecast.com/54nAGcIl', active: true },
         { source_type: 'podcast', source_name: 'TED Talks Daily', source_identifier: 'https://feeds.feedburner.com/TEDTalks_audio', active: true }
       ];
     }

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import NewsletterList from '../components/NewsletterList';
 import NewsletterEditor from '../components/NewsletterEditor';
-import ApiTest from '../components/ApiTest';
 
 const NewsletterPage = ({ user, onLogout }) => {
   const [currentView, setCurrentView] = useState('list'); // 'list' or 'editor'
@@ -42,10 +41,7 @@ const NewsletterPage = ({ user, onLogout }) => {
             </p>
           </div>
 
-          {/* API Test Component - Remove this after testing */}
-          <div className="mb-6">
-            <ApiTest />
-          </div>
+          {/* Debug component removed */}
 
           {currentView === 'list' ? (
             <NewsletterList 
