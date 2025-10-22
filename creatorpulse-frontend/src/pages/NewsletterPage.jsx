@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import NewsletterList from '../components/NewsletterList';
 import NewsletterEditor from '../components/NewsletterEditor';
+import ApiTest from '../components/ApiTest';
 
 const NewsletterPage = ({ user, onLogout }) => {
   const [currentView, setCurrentView] = useState('list'); // 'list' or 'editor'
@@ -39,6 +40,11 @@ const NewsletterPage = ({ user, onLogout }) => {
             <p className="mt-1 text-sm text-gray-600">
               Create, edit, and send newsletters to your subscribers
             </p>
+          </div>
+
+          {/* API Test Component - Remove this after testing */}
+          <div className="mb-6">
+            <ApiTest />
           </div>
 
           {currentView === 'list' ? (

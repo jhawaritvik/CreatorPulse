@@ -21,7 +21,8 @@ export default function SignupForm() {
       options: { 
         data: { 
           full_name: fullName 
-        } 
+        },
+        emailRedirectTo: `${window.location.origin}/confirm-email`
       }
     });
     
@@ -30,8 +31,9 @@ export default function SignupForm() {
     } else {
       // Check if email confirmation is required
       if (data.user && !data.user.email_confirmed_at) {
-        setError('Please check your email for a confirmation link before signing in.');
+        setError('Please check your email for a confirmation link. Click the link to activate your account, then you can sign in.');
       } else {
+        // User is automatically confirmed or confirmation is disabled
         navigate('/dashboard');
       }
     }

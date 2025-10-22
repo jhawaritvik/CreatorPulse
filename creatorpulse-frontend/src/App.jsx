@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import DashboardPage from './pages/DashboardPage';
 import NewsletterPage from './pages/NewsletterPage';
+import EmailConfirmationPage from './pages/EmailConfirmationPage';
 import { supabase } from './supabaseClient';
 
 export default function App() {
@@ -58,6 +59,10 @@ export default function App() {
         <Route 
           path="/newsletter" 
           element={user ? <NewsletterPage user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/confirm-email" 
+          element={<EmailConfirmationPage />} 
         />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
