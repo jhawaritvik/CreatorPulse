@@ -299,33 +299,36 @@ async def send_newsletter(
             logger.info(f"📤 Sending newsletter immediately to {len(request.clientIds)} clients")
 
             try:
-                result = email_service.create_and_send_newsletter(
-                    user_id=current_user.id,
-                    title=newsletter['title'],
-                    content=newsletter['content'],
-                    client_ids=request.clientIds,
-                    test_mode=False
+                # Add recipients to the existing newsletter
+                add_recipients_success = email_service.add_newsletter_recipients(
+                    newsletter_id=request.newsletterId,
+                    client_ids=request.clientIds
                 )
 
-                if not result['success']:
+                if not add_recipients_success:
+                     raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Failed to add recipients to the newsletter"
+                    )
+
+                # Send the newsletter
+                result = email_service.send_newsletter(
+                    newsletter_id=request.newsletterId,
+                    test_mode=False # Set to True for testing
+                )
+
+                if not result.get('success'):
                     raise HTTPException(
                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                         detail=f"Failed to send newsletter: {result.get('error', 'Unknown error')}"
                     )
 
-                # Update status
-                supabase_client.table('newsletters')\
-                    .update({
-                        'status': 'sent',
-                        'updated_at': datetime.now(timezone.utc).isoformat()
-                    })\
-                    .eq('id', request.newsletterId)\
-                    .execute()
+                # Status is updated by send_newsletter, so no need to update it here
 
                 return SendNewsletterResponse(
                     success=True,
                     message="Newsletter sent successfully",
-                    recipients=result['sent_count'],
+                    recipients=result.get('sent_count', 0),
                     scheduledFor=None
                 )
 
@@ -360,27 +363,24 @@ async def send_newsletter(
                 if scheduled_dt <= current_time:
                     logger.info(f"📤 Scheduled time is in past/now ({scheduled_dt}), sending immediately.")
 
-                    result = email_service.create_and_send_newsletter(
-                        user_id=current_user.id,
-                        title=newsletter['title'],
-                        content=newsletter['content'],
-                        client_ids=request.clientIds,
-                        test_mode=False
+                    # Add recipients and send
+                    add_recipients_success = email_service.add_newsletter_recipients(
+                        newsletter_id=request.newsletterId,
+                        client_ids=request.clientIds
                     )
+                    if not add_recipients_success:
+                        raise HTTPException(
+                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail="Failed to add recipients to the newsletter"
+                        )
 
-                    if result['success']:
-                        supabase_client.table('newsletters')\
-                            .update({
-                                'status': 'sent',
-                                'updated_at': datetime.now(timezone.utc).isoformat()
-                            })\
-                            .eq('id', request.newsletterId)\
-                            .execute()
+                    result = email_service.send_newsletter(newsletter_id=request.newsletterId)
 
+                    if result.get('success'):
                         return SendNewsletterResponse(
                             success=True,
                             message="Newsletter sent immediately (was scheduled for now)",
-                            recipients=result['sent_count'],
+                            recipients=result.get('sent_count', 0),
                             scheduledFor=None
                         )
                     else:
@@ -390,6 +390,17 @@ async def send_newsletter(
                         )
 
                 # Future scheduling → save to DB
+                # First, add recipients
+                add_recipients_success = email_service.add_newsletter_recipients(
+                    newsletter_id=request.newsletterId,
+                    client_ids=request.clientIds
+                )
+                if not add_recipients_success:
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Failed to add recipients for scheduled newsletter"
+                    )
+
                 supabase_client.table('newsletters')\
                     .update({
                         'status': 'scheduled',
