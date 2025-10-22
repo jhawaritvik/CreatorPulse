@@ -16,6 +16,7 @@ export default function NewsletterEditor({ newsletter, onSave, onBack }) {
   const [sendImmediately, setSendImmediately] = useState(true);
   const [sources, setSources] = useState([]);
   const [generating, setGenerating] = useState(false);
+  const [currentNewsletter, setCurrentNewsletter] = useState(newsletter);
 
   useEffect(() => {
     if (newsletter) {
@@ -24,6 +25,7 @@ export default function NewsletterEditor({ newsletter, onSave, onBack }) {
         content: newsletter.content || '',
         status: newsletter.status || 'draft'
       });
+      setCurrentNewsletter(newsletter);
     }
     fetchClients();
     fetchSources();
@@ -104,6 +106,7 @@ export default function NewsletterEditor({ newsletter, onSave, onBack }) {
 
   const handleSave = async () => {
     setLoading(true);
+    let savedNewsletter = null;
     try {
       const newsletterData = {
         ...formData,
@@ -111,29 +114,30 @@ export default function NewsletterEditor({ newsletter, onSave, onBack }) {
       };
 
       let result;
-      if (newsletter) {
+      if (currentNewsletter) {
         // Update existing newsletter
         result = await supabase
           .from('newsletters')
           .update(newsletterData)
-          .eq('id', newsletter.id);
+          .eq('id', currentNewsletter.id)
+          .select()
+          .single();
       } else {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
           alert('You must be logged in to save a newsletter');
           setLoading(false);
-          return;
+          return null;
         }
 
         // Create new newsletter
-        const newsletterData = {
+        const newNewsletterData = {
           ...formData,
-          user_id: user.id,
-          updated_at: new Date().toISOString()
+          user_id: user.id
         };
         result = await supabase
           .from('newsletters')
-          .insert([newsletterData])
+          .insert([newNewsletterData])
           .select()
           .single();
       }
@@ -143,13 +147,16 @@ export default function NewsletterEditor({ newsletter, onSave, onBack }) {
         alert('Failed to save newsletter');
       } else {
         alert('Newsletter saved successfully!');
-        if (onSave) onSave(result.data);
+        savedNewsletter = result.data;
+        setCurrentNewsletter(savedNewsletter); // Update state
+        if (onSave) onSave(savedNewsletter);
       }
     } catch (error) {
       console.error('Unexpected error:', error);
       alert('An unexpected error occurred');
     }
     setLoading(false);
+    return savedNewsletter;
   };
 
   const handleSend = async () => {
@@ -157,20 +164,26 @@ export default function NewsletterEditor({ newsletter, onSave, onBack }) {
       alert('Please select at least one client to send the newsletter to.');
       return;
     }
-
+  
     setLoading(true);
     try {
-      // First save the newsletter
-      await handleSave();
-
+      // First, save the newsletter and get the latest version
+      const savedNewsletter = await handleSave();
+  
+      if (!savedNewsletter) {
+        alert('Could not save the newsletter. Please try again.');
+        setLoading(false);
+        return;
+      }
+  
       // Prepare send data
       const sendData = {
-        newsletterId: newsletter?.id,
+        newsletterId: savedNewsletter.id,
         clientIds: selectedClients,
         scheduledTime: sendImmediately ? null : new Date(scheduledTime).toISOString(),
         sendImmediately
       };
-
+  
       // Call send function using apiService for proper authentication
       const response = await apiService.sendNewsletter(sendData);
       
@@ -188,7 +201,8 @@ export default function NewsletterEditor({ newsletter, onSave, onBack }) {
       }
     } catch (error) {
       console.error('Error sending newsletter:', error);
-      alert(`Failed to send newsletter: ${error.detail || error.message}`);
+      const errorMessage = error?.message || 'An unknown error occurred';
+      alert(`Failed to send newsletter: ${errorMessage}`);
     }
     setLoading(false);
   };

@@ -19,6 +19,21 @@ class ApiService {
     };
   }
 
+  _extractErrorMessage(errorData, response) {
+    if (typeof errorData.detail === 'string') {
+      return errorData.detail;
+    }
+    if (typeof errorData.detail === 'object') {
+      try {
+        // Try to stringify, useful for validation errors
+        return JSON.stringify(errorData.detail);
+      } catch (e) {
+        // Fallback if stringify fails
+      }
+    }
+    return `HTTP ${response.status}: ${response.statusText}`;
+  }
+
   async request(endpoint, options = {}) {
     try {
       const headers = await this.getAuthHeaders();
@@ -32,13 +47,19 @@ class ApiService {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`);
+        const errorMessage = this._extractErrorMessage(errorData, response);
+        throw new Error(errorMessage);
       }
 
       return await response.json();
     } catch (error) {
       console.error(`API request failed for ${endpoint}:`, error);
-      throw error;
+      // Re-throw the original error if it's already an Error instance
+      // Otherwise, wrap it in a new Error object
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error(error);
     }
   }
 

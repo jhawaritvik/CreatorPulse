@@ -313,16 +313,17 @@ class EmailService:
             if not newsletter_id:
                 return {'success': False, 'error': 'Failed to create newsletter'}
             
-            # Get client IDs if not provided
-            if client_ids is None:
+            # Determine client IDs
+            client_ids_to_send = client_ids
+            if client_ids_to_send is None:
                 clients = self.get_user_clients(user_id)
-                client_ids = [client['id'] for client in clients]
+                client_ids_to_send = [client['id'] for client in clients]
             
-            if not client_ids:
+            if not client_ids_to_send:
                 return {'success': False, 'error': 'No clients found to send to'}
             
             # Add recipients
-            if not self.add_newsletter_recipients(newsletter_id, client_ids):
+            if not self.add_newsletter_recipients(newsletter_id, client_ids_to_send):
                 return {'success': False, 'error': 'Failed to add recipients'}
             
             # Send newsletter
