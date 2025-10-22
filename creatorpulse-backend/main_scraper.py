@@ -1,6 +1,7 @@
 import sys
 import json
 from typing import List
+import random
 from dataclasses import asdict
 from datetime import datetime
 
@@ -24,6 +25,14 @@ def scrape_for_user(user_id: str) -> List[NewsItem]:
         return []
 
     source_map = {}
+    # Randomly select up to 5 active sources to keep runtime short
+    try:
+        if isinstance(sources, list) and len(sources) > 5:
+            sources = random.sample(sources, 5)
+    except Exception:
+        # If sampling fails for any reason, fall back to original list
+        pass
+
     for source in sources:
         source_type = source.get("source_type")
         if source_type not in source_map:

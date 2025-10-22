@@ -60,6 +60,12 @@ class SourceContentResponse(BaseModel):
     last_scraped: str
 
 
+class TestEmailRequest(BaseModel):
+    to_email: str
+    subject: str = "Test Email from CreatorPulse"
+    message: str = "This is a test email to verify SMTP configuration."
+
+
 # Authentication dependency
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 security = HTTPBearer()
@@ -565,6 +571,72 @@ async def test_endpoint():
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "status": "healthy"
     }
+
+@router.post("/test-email")
+async def test_email(
+    request: TestEmailRequest,
+    current_user = Depends(get_current_user)
+):
+    """
+    Test email sending functionality
+    
+    This endpoint allows you to test the email sending functionality with custom parameters.
+    It's protected and requires authentication.
+    """
+    try:
+        logger.info(f"Testing email to {request.to_email}")
+        
+        # Initialize email service
+        try:
+            email_service = EmailService()
+            logger.info("✅ Email service initialized successfully")
+        except Exception as email_init_error:
+            logger.error(f"❌ Failed to initialize email service: {str(email_init_error)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Email service initialization failed: {str(email_init_error)}"
+            )
+        
+        # Create HTML content
+        html_content = f"""
+        <html>
+            <body>
+                <h1>Test Email from CreatorPulse</h1>
+                <p>{request.message}</p>
+                <p>This email was sent to test the SMTP configuration.</p>
+                <p>Current time: {datetime.now(timezone.utc).isoformat()}</p>
+            </body>
+        </html>
+        """
+        
+        # Send the test email
+        success = email_service.send_email(
+            to_email=request.to_email,
+            subject=request.subject,
+            html_content=html_content,
+            text_content=request.message
+        )
+        
+        if success:
+            logger.info(f"✅ Test email sent successfully to {request.to_email}")
+            return {
+                "success": True,
+                "message": f"Test email sent successfully to {request.to_email}",
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }
+        else:
+            logger.error(f"❌ Failed to send test email to {request.to_email}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to send test email to {request.to_email}. Check server logs for details."
+            )
+            
+    except Exception as e:
+        logger.error(f"❌ Error in test_email endpoint: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An error occurred while sending test email: {str(e)}"
+        )
 
 @router.get("/scheduled-newsletters")
 async def get_scheduled_newsletters(current_user = Depends(get_current_user)):

@@ -188,7 +188,7 @@ export default function NewsletterEditor({ newsletter, onSave, onBack }) {
       }
     } catch (error) {
       console.error('Error sending newsletter:', error);
-      alert(`Failed to send newsletter: ${error.message}`);
+      alert(`Failed to send newsletter: ${error.detail || error.message}`);
     }
     setLoading(false);
   };
